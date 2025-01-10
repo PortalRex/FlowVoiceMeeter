@@ -1,0 +1,2 @@
+FlowLauncher==0.2.0
+Voicemeeter-api==2.6.0

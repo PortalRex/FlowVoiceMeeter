@@ -1,0 +1,52 @@
+name: Publish Release
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: 
+      - .github/workflows/*
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      python_ver: 3.11
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python_ver }}
+      
+      - name: Get version from plugin.json
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'plugin.json'
+          prop_path: 'Version'
+      
+      - name: Generate unique release tag
+        id: generate_tag
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          VERSION="${{ steps.version.outputs.prop }}"
+          UNIQUE_TAG="v${VERSION}-${TIMESTAMP}"
+          echo "tag=${UNIQUE_TAG}" >> $GITHUB_OUTPUT
+      
+      - name: Install dependencies and create zip
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt -t ./lib
+          zip -r Flow.Launcher.Plugin.VoiceMeeter.zip . -x '*.git*'
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'Flow.Launcher.Plugin.VoiceMeeter.zip'
+          tag_name: "${{ steps.generate_tag.outputs.tag }}"
+          generate_release_notes: true

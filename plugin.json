@@ -1,0 +1,12 @@
+{
+    "ID": "a85a40da-62f5-4c99-a250-e99076a12803",
+    "ActionKeyword": "vm",
+    "Name": "FlowVoiceMeeter",
+    "Description": "Hooks VoiceMeeter to select an output device",
+    "Author": "Rex",
+    "Version": "1.0.0",
+    "Language": "python",
+    "Website": "",
+    "IcoPath": "assets\\icon.png",
+    "ExecuteFileName": "main.py"
+}
